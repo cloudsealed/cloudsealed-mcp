@@ -36,6 +36,21 @@ async def test_analyze_billing_waste_json_is_valid():
 
 
 @pytest.mark.asyncio
+async def test_budget_degrades_gracefully_on_old_engine():
+    # If the installed cloudsealed-jit predates budget support (0.3.0), a budget
+    # request must return a clear upgrade message, not crash on a bad kwarg.
+    import cloudsealed_mcp.server as server
+
+    params = AnalyzeBillingWasteInput(csv_content=_SAMPLE_CSV, budget=100.0)
+    if server._ANALYZE_SUPPORTS_BUDGET:
+        result = await cloudsealed_analyze_billing_waste(params)
+        assert not result.startswith("Error:")
+    else:
+        result = await cloudsealed_analyze_billing_waste(params)
+        assert "requires cloudsealed-jit>=0.3.0" in result
+
+
+@pytest.mark.asyncio
 async def test_analyze_billing_waste_reports_parse_errors():
     params = AnalyzeBillingWasteInput(csv_content="not,a,billing,export\nfoo,bar,baz,qux")
     result = await cloudsealed_analyze_billing_waste(params)

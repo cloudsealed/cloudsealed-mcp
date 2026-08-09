@@ -21,6 +21,7 @@ call third parties other than the Predictive-ML-Core API itself.
 
 from __future__ import annotations
 
+import inspect
 import json
 import os
 from enum import Enum
@@ -29,6 +30,11 @@ from typing import Any, Optional
 import httpx
 from cloudsealed_jit import analyze
 from cloudsealed_jit.parsing import ParseError, parse_billing_csv
+
+#: Budget-breach forecasting needs cloudsealed-jit >= 0.3.0. Detect it so the
+#: server still runs against an older published engine (budget just won't be
+#: available) instead of crashing on an unexpected keyword argument.
+_ANALYZE_SUPPORTS_BUDGET = "budget" in inspect.signature(analyze).parameters
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 from pydantic import BaseModel, ConfigDict, Field
@@ -186,7 +192,13 @@ async def cloudsealed_analyze_billing_waste(params: AnalyzeBillingWasteInput) ->
     except ParseError as exc:
         return f"Error: {exc}"
 
-    result = analyze(series, params.analysis_type.value, budget=params.budget)
+    if params.budget is not None and not _ANALYZE_SUPPORTS_BUDGET:
+        return (
+            "Error: budget forecasting requires cloudsealed-jit>=0.3.0. "
+            "Upgrade with `pip install -U cloudsealed-jit`."
+        )
+    kwargs = {"budget": params.budget} if _ANALYZE_SUPPORTS_BUDGET else {}
+    result = analyze(series, params.analysis_type.value, **kwargs)
 
     if params.response_format == ResponseFormat.JSON:
         return json.dumps(result.to_dict(), indent=2)
