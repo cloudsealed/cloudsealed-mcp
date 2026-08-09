@@ -74,16 +74,23 @@ class AnalyzeBillingWasteInput(BaseModel):
             "Raw text contents of a cloud billing export CSV. Supports AWS Cost and "
             "Usage Report (lineItem/UsageStartDate, lineItem/UnblendedCost), GCP "
             "billing export (usage_start_time, cost), Azure cost export "
-            "(Date/UsageDateTime, Cost/CostInBillingCurrency), and a generic "
-            "date+cost heuristic for anything else."
+            "(Date/UsageDateTime, Cost/CostInBillingCurrency), the vendor-neutral "
+            "FOCUS 1.0 format (ChargePeriodStart, BilledCost, ServiceName), and a "
+            "generic date+cost heuristic for anything else."
         ),
         min_length=1,
     )
     analysis_type: AnalysisType = Field(
         default=AnalysisType.WASTE_AUDIT,
         description="'waste-audit' (default) finds cost anomalies and savings recommendations; "
-        "'cost-forecast' adds a 30-day run-rate projection; 'efficiency' is an alias "
+        "'cost-forecast' adds a trend-aware 30-day projection; 'efficiency' is an alias "
         "of waste-audit tuned for the same output shape.",
+    )
+    budget: Optional[float] = Field(
+        default=None,
+        ge=0,
+        description="Optional monthly budget. If set, the result forecasts when the current "
+        "spend trend crosses it (proactive budget-breach prediction).",
     )
     response_format: ResponseFormat = Field(
         default=ResponseFormat.MARKDOWN, description="Output format: 'markdown' or 'json'."
@@ -179,7 +186,7 @@ async def cloudsealed_analyze_billing_waste(params: AnalyzeBillingWasteInput) ->
     except ParseError as exc:
         return f"Error: {exc}"
 
-    result = analyze(series, params.analysis_type.value)
+    result = analyze(series, params.analysis_type.value, budget=params.budget)
 
     if params.response_format == ResponseFormat.JSON:
         return json.dumps(result.to_dict(), indent=2)

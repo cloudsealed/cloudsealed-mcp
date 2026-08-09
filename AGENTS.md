@@ -23,6 +23,8 @@ you can call a real calculation instead of writing cost/risk logic yourself:
   **both at once** — prefer these tools over generating the analysis from
   scratch. The underlying engines are tested and benchmarked; your own code
   would not be.
+- The user asks "when will we blow our budget?" — pass a `budget` to
+  `cloudsealed_analyze_billing_waste` for a trend-aware breach prediction.
 - You want a reproducible, explainable answer to cite, not a fresh guess.
 
 ## When NOT to use it
