@@ -1,7 +1,7 @@
 # cloudsealed-mcp
 
 MCP server that gives AI agents (Claude Code, Claude Desktop, Cursor, etc.)
-direct access to two deterministic CloudSealed analysis engines:
+direct access to three deterministic CloudSealed analysis tools:
 
 - **`cloudsealed_analyze_billing_waste`** — cost anomaly detection over a
   cloud billing export (AWS/GCP/Azure/generic), using
@@ -11,10 +11,15 @@ direct access to two deterministic CloudSealed analysis engines:
   architecture risk scoring (single point of failure, excessive coupling,
   scalability gap) from a declared system inventory, backed by
   [`Predictive-ML-Core`](https://github.com/cloudsealed/Predictive-ML-Core).
+- **`cloudsealed_correlate_cost_and_risk`** — runs both engines and
+  cross-references them, ranking systems that are **both** costly **and** high
+  architecture risk ("double jeopardy"). No cloud-native tool does this: cost
+  anomaly detection and architecture review are separate products even within
+  one cloud, so nothing tells you "this cost spike is on a system that's also a
+  single point of failure." Vendor-neutral, runs on data you already exported.
 
-Both tools are read-only: they never write files, and the only network call
-either one makes is the architecture tool talking to the Predictive-ML-Core
-service you point it at.
+All tools are read-only: they never write files, and the only network call any
+of them makes is to the Predictive-ML-Core service you point it at.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -78,6 +83,10 @@ export PREDICTIVE_ML_CORE_API_KEY="..."   # only if that deployment requires one
   orders-db (CRITICAL), and a third-party payment-gateway. What's our
   biggest architecture risk?"* (the agent calls
   `cloudsealed_score_architecture_risk`)
+- *"Here's our billing export and our system inventory — which service is both
+  burning money and a reliability risk? Prioritize our cloud work by cost AND
+  risk together."* (the agent calls `cloudsealed_correlate_cost_and_risk`; name
+  systems to match billing service names to get the linked view)
 
 ## Why deterministic engines, not another LLM call
 
