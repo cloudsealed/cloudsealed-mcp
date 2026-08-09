@@ -90,6 +90,27 @@ and
 That means an agent calling these tools gets a reproducible, explainable
 answer instead of a second opinion from another LLM.
 
+## FAQ
+
+**What's an MCP server, and why not just ask the agent to write the analysis
+code itself?** MCP (Model Context Protocol) lets an agent call a real tool
+instead of generating code from scratch each time. The underlying engines
+here are deterministic and already tested/benchmarked — an agent calling
+them gets a reproducible answer, not a fresh guess with its own bugs.
+
+**Which clients support this?** Any MCP client: Claude Code, Claude Desktop,
+Cursor, Windsurf, and others that read a standard `mcpServers` config block.
+
+**Is there a hosted version, or do I need to run anything locally?**
+`cloudsealed_analyze_billing_waste` needs nothing but the `uvx` invocation.
+`cloudsealed_score_architecture_risk` needs a Predictive-ML-Core instance
+reachable at `PREDICTIVE_ML_CORE_URL` — self-hosted via Docker by default
+(see above), or your own deployment.
+
+**Does this send my billing data anywhere?** No — the billing analysis runs
+entirely in-process. Only the architecture tool makes a network call, and
+only to whichever `PREDICTIVE_ML_CORE_URL` you configure.
+
 ## Development
 
 ```bash
