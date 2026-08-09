@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.cloudsealed/cloudsealed-mcp",
+  "title": "CloudSealed",
+  "description": "MCP server exposing CloudSealed's deterministic cloud-cost anomaly detector and auditable architecture risk scorer as tools for AI agents.",
+  "repository": {
+    "url": "https://github.com/cloudsealed/cloudsealed-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "cloudsealed-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

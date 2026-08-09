@@ -18,6 +18,8 @@ service you point it at.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+<!-- mcp-name: io.github.cloudsealed/cloudsealed-mcp -->
+
 ---
 
 ## Install
