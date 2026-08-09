@@ -1,0 +1,18 @@
+# cloudsealed-mcp
+
+> MCP server giving AI agents (Claude Code, Claude Desktop, Cursor, etc.)
+> direct access to two deterministic CloudSealed analysis engines:
+> `cloudsealed_analyze_billing_waste` (cloud billing cost anomaly detection)
+> and `cloudsealed_score_architecture_risk` (auditable architecture risk
+> scoring). Both tools score with explicit, rule-based methods, not another
+> LLM call — every result traces back to a stated rationale.
+
+## Docs
+
+- [README](https://github.com/cloudsealed/cloudsealed-mcp/blob/main/README.md): install, MCP client config (Claude Code/Desktop/Cursor), example prompts
+- [src/cloudsealed_mcp/server.py](https://github.com/cloudsealed/cloudsealed-mcp/blob/main/src/cloudsealed_mcp/server.py): tool implementations and full docstrings/schemas
+
+## Related
+
+- [JIT-Optimization-Engine](https://github.com/cloudsealed/JIT-Optimization-Engine): the billing waste engine this server wraps
+- [Predictive-ML-Core](https://github.com/cloudsealed/Predictive-ML-Core): the architecture risk engine this server calls
