@@ -25,7 +25,31 @@ of them makes is to the Predictive-ML-Core service you point it at.
 
 <!-- mcp-name: io.github.cloudsealed/cloudsealed-mcp -->
 
+### Configuração Mágica para IAs (Claude Desktop & Cursor)
+
+O verdadeiro poder do CloudSealed MCP é usá-lo dentro das suas ferramentas de IA do dia-a-dia. 
+
+#### No Cursor IDE
+Vá em `Settings > Features > MCP` e clique em **+ Add New MCP Server**.
+* **Type:** `command`
+* **Command:** `uvx cloudsealed-mcp`
+Isso fará o Cursor analisar a arquitetura do seu código em C#/Python conversando com você no chat!
+
+#### No Claude Desktop
+Adicione ao seu arquivo `claude_desktop_config.json`:
+```json
+{
+  "mcpServers": {
+    "cloudsealed": {
+      "command": "uvx",
+      "args": ["cloudsealed-mcp"]
+    }
+  }
+}
+```
+
 ---
+
 
 ## Install
 
